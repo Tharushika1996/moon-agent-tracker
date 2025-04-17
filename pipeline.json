@@ -1,0 +1,62 @@
+{
+  "pipeline": {
+    "name": "MoonInsurancePipeline",
+    "roleArn": "arn:aws:iam::746669237435:role/MoonInsuranceCICDrole",
+    "artifactStore": {
+      "type": "S3",
+      "location": "mooninsurance-artifacts"
+    },
+    "stages": [
+      {
+        "name": "Source",
+        "actions": [
+          {
+            "name": "SourceAction",
+            "actionTypeId": {
+              "category": "Source",
+              "owner": "AWS",
+              "provider": "CodeCommit",
+              "version": "1"
+            },
+            "configuration": {
+              "RepositoryName": "MoonInsuranceRepo",
+              "BranchName": "main"
+            },
+            "outputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Build",
+        "actions": [
+          {
+            "name": "BuildAction",
+            "actionTypeId": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "configuration": {
+              "ProjectName": "MoonInsuranceBuild"
+            },
+            "inputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ],
+            "outputArtifacts": [
+              {
+                "name": "BuildArtifact"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
